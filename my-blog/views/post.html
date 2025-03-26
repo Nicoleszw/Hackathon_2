@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Post</title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <div class="post-container">
+    <div class="post-image" id="postImage"></div>
+    <div class="post-content">
+      <h1 id="postTitle"></h1>
+      <h3 id="postSubtitle"></h3>
+      <p id="postContent"></p>
+    </div>
+  </div>
+
+  <script>
+    const postId = window.location.pathname.split("/").pop();
+  
+    fetch(`/api/post/${postId}`)
+      .then(res => {
+        if (!res.ok) {
+          throw new Error("Post not found");
+        }
+        return res.json();
+      })
+      .then(data => {
+        const post = data.content;
+  
+        document.getElementById("postTitle").innerText = post.title;
+        document.getElementById("postSubtitle").innerText = post.subtitle;
+        document.getElementById("postContent").innerText = post.content;
+        document.getElementById("postImage").style.backgroundImage = `url('${post.image}')`;
+      })
+      .catch(err => {
+        document.querySelector(".post-content").innerHTML = `<h1>Error loading post.</h1>`;
+        console.error(err);
+      });
+  </script>
+  
+</body>
+</html>
